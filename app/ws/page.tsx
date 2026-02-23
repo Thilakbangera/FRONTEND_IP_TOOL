@@ -7,6 +7,9 @@ import { UploadOne, FileChips } from "../../components/Upload";
 import { responseToDownload } from "../../lib/download";
 
 type GenState = "idle" | "generating" | "done" | "error";
+const WS_BACKEND_BASE = (
+  process.env.NEXT_PUBLIC_WS_BACKEND_URL || "https://automated-written-submission-tool.onrender.com"
+).replace(/\/$/, "");
 
 export default function WsPage() {
   const [city, setCity] = useState("Chennai");
@@ -47,14 +50,19 @@ export default function WsPage() {
       form.append("amended_claims", amendedClaims!);
       techImages.forEach((img) => form.append("tech_solution_images", img));
 
-      const res = await fetch("/api/ws/api/generate", { method: "POST", body: form });
+      const res = await fetch(`${WS_BACKEND_BASE}/api/generate`, { method: "POST", body: form });
       if (!res.ok) throw new Error(await res.text().catch(() => `WS failed (${res.status})`));
 
       const dl = await responseToDownload(res, "written_submission.docx");
       setDownload({ url: dl.url, filename: dl.filename });
       setState("done");
     } catch (e: any) {
-      setError(e?.message || "WS generation failed");
+      const message = e?.message || "WS generation failed";
+      setError(
+        message === "Failed to fetch"
+          ? "Network/CORS error while calling Render backend. Allow your frontend origin in backend CORS."
+          : message
+      );
       setState("error");
     }
   }
@@ -71,7 +79,7 @@ export default function WsPage() {
   return (
     <Shell
       title="WS Generator"
-      subtitle="Organize required documents and produce the formal submission."
+      subtitle="Organize required documents and generate WS by calling the Render backend directly."
       active="ws"
     >
       <div className="grid gap-6 lg:grid-cols-2">

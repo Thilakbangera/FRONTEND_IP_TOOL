@@ -10,6 +10,9 @@ type GenState = "idle" | "parsing" | "generating" | "done" | "error";
 
 const DEFAULT_OFFICE_ADDRESS =
   "THE PATENT OFFICE\nI.P.O BUILDING\nG.S.T.Road, Guindy\nChennai - [PIN]";
+const FER_BACKEND_BASE = (
+  process.env.NEXT_PUBLIC_FER_BACKEND_URL || "https://fer-reply-tool.onrender.com"
+).replace(/\/$/, "");
 
 export default function FerPage() {
   const [ferPdf, setFerPdf] = useState<File | null>(null);
@@ -42,13 +45,18 @@ export default function FerPage() {
       // Keys must match your backend (from your earlier Streamlit app)
       form.append("fer_pdf", ferPdf!);
 
-      const res = await fetch("/api/fer/api/parse_fer", { method: "POST", body: form });
+      const res = await fetch(`${FER_BACKEND_BASE}/api/parse_fer`, { method: "POST", body: form });
       if (!res.ok) throw new Error(await res.text().catch(() => `Parse failed (${res.status})`));
       const json = await res.json();
       setParseJson(json);
       setState("idle");
     } catch (e: any) {
-      setError(e?.message || "Parse failed");
+      const message = e?.message || "Parse failed";
+      setError(
+        message === "Failed to fetch"
+          ? "Network/CORS error while calling Render backend. Allow your frontend origin in backend CORS."
+          : message
+      );
       setState("error");
     }
   }
@@ -71,14 +79,19 @@ export default function FerPage() {
       form.append("dx_range", dxRange);
       form.append("dx_disclosed_features", dxDisclosedFeatures);
 
-      const res = await fetch("/api/fer/api/generate_reply", { method: "POST", body: form });
+      const res = await fetch(`${FER_BACKEND_BASE}/api/generate_reply`, { method: "POST", body: form });
       if (!res.ok) throw new Error(await res.text().catch(() => `Generate failed (${res.status})`));
 
       const dl = await responseToDownload(res, "FER_Reply_Draft.docx");
       setDownload({ url: dl.url, filename: dl.filename });
       setState("done");
     } catch (e: any) {
-      setError(e?.message || "Generate failed");
+      const message = e?.message || "Generate failed";
+      setError(
+        message === "Failed to fetch"
+          ? "Network/CORS error while calling Render backend. Allow your frontend origin in backend CORS."
+          : message
+      );
       setState("error");
     }
   }
@@ -92,7 +105,7 @@ export default function FerPage() {
   return (
     <Shell
       title="FER Reply Generator"
-      subtitle="Review the extracted content before generating the FER reply document."
+      subtitle="Review extracted content, then generate the FER reply by calling the Render backend directly."
       active="fer"
     >
       <div className="grid gap-6 lg:grid-cols-3">
@@ -217,7 +230,7 @@ export default function FerPage() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="text-sm font-semibold text-stone-900">Parsed JSON Preview</div>
-              <div className="mt-1 text-sm text-stone-600">From /api/fer/api/parse_fer</div>
+              <div className="mt-1 text-sm text-stone-600">From Render /api/parse_fer</div>
             </div>
           </div>
           <pre className="mt-4 max-h-[520px] overflow-auto rounded-2xl border border-stone-200 bg-white p-4 text-xs text-stone-800">
