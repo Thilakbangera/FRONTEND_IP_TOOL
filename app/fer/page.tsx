@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { Shell } from "../../components/Shell";
 import { Card, Label, PrimaryButton, SecondaryButton } from "../../components/Cards";
-import { UploadOne } from "../../components/Upload";
+import { FileChips, UploadOne } from "../../components/Upload";
 import { responseToDownload } from "../../lib/download";
 
 type GenState = "idle" | "parsing" | "generating" | "done" | "error";
@@ -36,6 +36,10 @@ const PDF_DOC_DOCX_ACCEPT = {
 
 const PDF_DOC_DOCX_INPUT_ACCEPT =
   ".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const IMAGE_ACCEPT = {
+  "image/png": [".png"],
+  "image/jpeg": [".jpg", ".jpeg"],
+};
 
 function parseBackendError(raw: string, fallback: string): string {
   const text = (raw || "").trim();
@@ -53,6 +57,7 @@ export default function FerPage() {
   const [ferPdf, setFerPdf] = useState<File | null>(null);
   const [csPdf, setCsPdf] = useState<File | null>(null);
   const [amendedClaims, setAmendedClaims] = useState<File | null>(null);
+  const [technicalEffectImages, setTechnicalEffectImages] = useState<File[]>([]);
 
   const [priorArtMode, setPriorArtMode] = useState<PriorArtMode>("pdf");
   const [priorArts, setPriorArts] = useState<PriorArtEntry[]>([createPriorArtEntry(0)]);
@@ -157,6 +162,9 @@ export default function FerPage() {
       priorArts.forEach((entry) => {
         if (entry.diagram) form.append("prior_art_diagrams", entry.diagram);
       });
+      technicalEffectImages.forEach((image) => {
+        form.append("technical_effect_images", image);
+      });
 
       const res = await fetch(`${FER_BACKEND_BASE}/api/generate_reply`, { method: "POST", body: form });
       if (!res.ok) {
@@ -216,6 +224,22 @@ export default function FerPage() {
           file={amendedClaims}
           onFile={setAmendedClaims}
           helper="Backend key: amended_claims_pdf"
+        />
+      </div>
+
+      <div className="mt-6">
+        <UploadOne
+          label="Technical Effect Images (Optional)"
+          accept={IMAGE_ACCEPT}
+          multiple
+          onFiles={setTechnicalEffectImages}
+          helper="Backend key: technical_effect_images (multiple)"
+        />
+        <FileChips
+          files={technicalEffectImages}
+          onRemove={(idx) =>
+            setTechnicalEffectImages((prev) => prev.filter((_, i) => i !== idx))
+          }
         />
       </div>
 
