@@ -26,7 +26,7 @@ export default function HomePage() {
                 </div>
                 <h2 className="mt-3 text-xl font-semibold text-stone-900">FER Reply Generator</h2>
                 <p className="mt-2 text-sm text-stone-600">
-                  Parse FER for preview, then generate a DOCX reply using your existing backend.
+                  Parse FER, provide prior-art inputs, and generate a DOCX reply using your backend.
                 </p>
               </div>
               <div className="rounded-full bg-stone-900 px-4 py-2 text-sm font-medium text-white shadow group-hover:shadow">
@@ -45,7 +45,7 @@ export default function HomePage() {
                 </div>
                 <h2 className="mt-3 text-xl font-semibold text-stone-900">WS Generator</h2>
                 <p className="mt-2 text-sm text-stone-600">
-                  Upload FER/HN/Spec/Claims + diagrams and generate Written Submission DOCX.
+                  Upload HN/Specification/Claims, add prior arts and diagrams, then generate Written Submission DOCX.
                 </p>
               </div>
               <div className="rounded-full bg-stone-900 px-4 py-2 text-sm font-medium text-white shadow group-hover:shadow">
