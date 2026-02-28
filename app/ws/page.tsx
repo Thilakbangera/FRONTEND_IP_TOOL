@@ -28,6 +28,15 @@ const createPriorArtEntry = (index: number): PriorArtEntry => ({
   diagram: null,
 });
 
+const PDF_DOC_DOCX_ACCEPT = {
+  "application/pdf": [".pdf"],
+  "application/msword": [".doc"],
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+};
+
+const PDF_DOC_DOCX_INPUT_ACCEPT =
+  ".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
 function parseBackendError(raw: string, fallback: string): string {
   const text = (raw || "").trim();
   if (!text) return fallback;
@@ -147,8 +156,8 @@ export default function WsPage() {
   const checklist = [
     { k: "Office city", ok: city.trim().length > 1 },
     { k: "Filed On", ok: filedOn.trim().length > 0 },
-    { k: "Hearing Notice PDF", ok: !!hn },
-    { k: "Specification PDF", ok: !!specification },
+    { k: "Hearing Notice (PDF/DOC/DOCX)", ok: !!hn },
+    { k: "Specification (PDF/DOC/DOCX)", ok: !!specification },
     { k: "Amended claims (PDF/DOC/DOCX/TXT)", ok: !!amendedClaims },
     { k: "Tech solution diagrams (>=1)", ok: techImages.length > 0 },
     { k: "Prior Arts", ok: priorArtsComplete },
@@ -162,15 +171,15 @@ export default function WsPage() {
     >
       <div className="grid gap-6 lg:grid-cols-2">
         <UploadOne
-          label="Hearing Notice (HN) PDF (required)"
-          accept={{ "application/pdf": [".pdf"] }}
+          label="Hearing Notice (HN) Document (PDF / DOC / DOCX) (required)"
+          accept={PDF_DOC_DOCX_ACCEPT}
           file={hn}
           onFile={setHn}
           helper="Backend key: hn"
         />
         <UploadOne
-          label="Complete Specification PDF (required)"
-          accept={{ "application/pdf": [".pdf"] }}
+          label="Complete Specification Document (PDF / DOC / DOCX) (required)"
+          accept={PDF_DOC_DOCX_ACCEPT}
           file={specification}
           onFile={setSpecification}
           helper="Backend key: specification"
@@ -219,7 +228,9 @@ export default function WsPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-sm font-semibold text-stone-900">Prior Arts (D1-Dn)</div>
-            <div className="mt-1 text-sm text-stone-600">Choose PDF mode or manual text mode for prior-art input.</div>
+            <div className="mt-1 text-sm text-stone-600">
+              Choose document mode or manual text mode for prior-art input.
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <select
@@ -227,7 +238,7 @@ export default function WsPage() {
               onChange={(e) => setPriorArtMode(e.target.value as PriorArtMode)}
               className="rounded-full border border-stone-200 bg-white px-3 py-2 text-xs text-stone-700"
             >
-              <option value="pdf">From Prior-Art PDF</option>
+              <option value="pdf">From Prior-Art Document</option>
               <option value="text">Manual Abstract Text</option>
             </select>
             <button
@@ -281,10 +292,10 @@ export default function WsPage() {
 
               {priorArtMode === "pdf" ? (
                 <div className="mt-4">
-                  <Label>Prior-Art PDF (required)</Label>
+                  <Label>Prior-Art Document (PDF / DOC / DOCX) (required)</Label>
                   <input
                     type="file"
-                    accept=".pdf,application/pdf"
+                    accept={PDF_DOC_DOCX_INPUT_ACCEPT}
                     onChange={(e) => updatePriorArt(entry.id, { pdf: e.target.files?.[0] || null })}
                     className="mt-2 block w-full rounded-2xl border border-stone-200 bg-white px-4 py-2 text-sm text-stone-700 file:mr-3 file:rounded-full file:border-0 file:bg-stone-900 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-white"
                   />
@@ -377,7 +388,7 @@ export default function WsPage() {
         <Card>
           <div className="text-sm font-semibold text-stone-900">Notes</div>
           <div className="mt-2 text-sm text-stone-600">
-            Prior arts can be provided either as PDF uploads (auto abstract extraction) or manual abstract text.
+            Prior arts can be provided either as document uploads (auto abstract extraction) or manual abstract text.
             <br />
             Optional prior-art diagrams are submitted with backend key{" "}
             <span className="mx-1 rounded bg-stone-100 px-1 py-0.5 font-mono text-xs">prior_art_diagrams</span>.

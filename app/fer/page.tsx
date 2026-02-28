@@ -28,6 +28,15 @@ const createPriorArtEntry = (index: number): PriorArtEntry => ({
   diagram: null,
 });
 
+const PDF_DOC_DOCX_ACCEPT = {
+  "application/pdf": [".pdf"],
+  "application/msword": [".doc"],
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+};
+
+const PDF_DOC_DOCX_INPUT_ACCEPT =
+  ".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
 function parseBackendError(raw: string, fallback: string): string {
   const text = (raw || "").trim();
   if (!text) return fallback;
@@ -174,8 +183,8 @@ export default function FerPage() {
   }
 
   const checklist = [
-    { k: "FER PDF", ok: !!ferPdf },
-    { k: "CS PDF", ok: !!csPdf },
+    { k: "FER Document (PDF/DOC/DOCX)", ok: !!ferPdf },
+    { k: "CS Document (PDF/DOC/DOCX)", ok: !!csPdf },
     { k: "Amended Claims (PDF/DOC/DOCX)", ok: !!amendedClaims },
     { k: "Prior Arts", ok: priorArtsComplete },
   ];
@@ -188,26 +197,22 @@ export default function FerPage() {
     >
       <div className="grid gap-6 lg:grid-cols-3">
         <UploadOne
-          label="FER PDF (required)"
-          accept={{ "application/pdf": [".pdf"] }}
+          label="FER Document (PDF / DOC / DOCX) (required)"
+          accept={PDF_DOC_DOCX_ACCEPT}
           file={ferPdf}
           onFile={setFerPdf}
           helper="Backend key: fer_pdf"
         />
         <UploadOne
-          label="Complete Specification (CS) PDF (required)"
-          accept={{ "application/pdf": [".pdf"] }}
+          label="Complete Specification (CS) Document (PDF / DOC / DOCX) (required)"
+          accept={PDF_DOC_DOCX_ACCEPT}
           file={csPdf}
           onFile={setCsPdf}
           helper="Backend key: cs_pdf"
         />
         <UploadOne
           label="Amended Claims (PDF / DOC / DOCX)"
-          accept={{
-            "application/pdf": [".pdf"],
-            "application/msword": [".doc"],
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
-          }}
+          accept={PDF_DOC_DOCX_ACCEPT}
           file={amendedClaims}
           onFile={setAmendedClaims}
           helper="Backend key: amended_claims_pdf"
@@ -219,7 +224,7 @@ export default function FerPage() {
           <div>
             <div className="text-sm font-semibold text-stone-900">Prior Arts (D1-Dn)</div>
             <div className="mt-1 text-sm text-stone-600">
-              In PDF mode, each prior-art PDF is checked by backend. Scanned image-only PDFs are rejected.
+              In document mode, each prior-art upload is checked by backend. Scanned image-only PDFs are rejected.
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -228,7 +233,7 @@ export default function FerPage() {
               onChange={(e) => setPriorArtMode(e.target.value as PriorArtMode)}
               className="rounded-full border border-stone-200 bg-white px-3 py-2 text-xs text-stone-700"
             >
-              <option value="pdf">From Prior-Art PDF</option>
+              <option value="pdf">From Prior-Art Document</option>
               <option value="text">Manual Abstract Text</option>
             </select>
             <button
@@ -282,10 +287,10 @@ export default function FerPage() {
 
               {priorArtMode === "pdf" ? (
                 <div className="mt-4">
-                  <Label>Prior-Art PDF (required)</Label>
+                  <Label>Prior-Art Document (PDF / DOC / DOCX) (required)</Label>
                   <input
                     type="file"
-                    accept=".pdf,application/pdf"
+                    accept={PDF_DOC_DOCX_INPUT_ACCEPT}
                     onChange={(e) => updatePriorArt(entry.id, { pdf: e.target.files?.[0] || null })}
                     className="mt-2 block w-full rounded-2xl border border-stone-200 bg-white px-4 py-2 text-sm text-stone-700 file:mr-3 file:rounded-full file:border-0 file:bg-stone-900 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-white"
                   />
