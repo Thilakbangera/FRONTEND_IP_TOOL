@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "IP Drafting Studio",
+  title: "ProSection Studio",
   description: "Unified FER Reply + WS Generator frontend (Netlify)",
 };
 
