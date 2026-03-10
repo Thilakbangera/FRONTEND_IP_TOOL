@@ -46,7 +46,7 @@ export default function LoginPage() {
             ProSection Studio
           </div>
           <h1 className="text-3xl font-semibold tracking-tight text-stone-900">
-            LextriaTech AI Tools
+            Lextria Research
           </h1>
           <p className="text-sm text-stone-600">
             FER Reply &amp; Written Submission Generator
