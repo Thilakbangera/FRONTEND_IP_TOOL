@@ -4,11 +4,13 @@ import Link from "next/link";
 import { Shell } from "../components/Shell";
 import { HoverCard } from "../components/Cards";
 import { OnboardingModal, useOnboarding } from "../components/Onboarding";
+import { AuthGuard } from "../components/AuthGuard";
 
 export default function HomePage() {
   const tour = useOnboarding();
 
   return (
+    <AuthGuard>
     <Shell
       title="Choose your workspace"
       subtitle="A consistent environment for preparing formal responses and submissions. Designed to support structured drafting workflows with clarity, stability, and predictable output."
@@ -71,6 +73,7 @@ export default function HomePage() {
         </button>
       </div>
     </Shell>
+    </AuthGuard>
   );
 }
 

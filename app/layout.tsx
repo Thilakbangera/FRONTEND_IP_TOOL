@@ -2,7 +2,7 @@ import "./globals.css";
 
 export const metadata = {
   title: "ProSection Studio",
-  description: "Unified FER Reply + WS Generator frontend (Netlify)",
+  description: "FER Reply & Written Submission Generator – LextriaTech",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -11,4 +11,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>{children}</body>
     </html>
   );
-}
+}  

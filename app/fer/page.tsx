@@ -5,6 +5,7 @@ import { Shell } from "../../components/Shell";
 import { Card, Label, PrimaryButton, SecondaryButton } from "../../components/Cards";
 import { FileChips, UploadOne } from "../../components/Upload";
 import { responseToDownload } from "../../lib/download";
+import { AuthGuard } from "../../components/AuthGuard";
 
 type GenState = "idle" | "parsing" | "generating" | "done" | "error";
 type PriorArtMode = "pdf" | "text";
@@ -198,6 +199,7 @@ export default function FerPage() {
   ];
 
   return (
+    <AuthGuard>
     <Shell
       title="FER Reply Generator"
       subtitle="Review extracted content and generate the FER reply with prior-art inputs."
@@ -416,5 +418,6 @@ export default function FerPage() {
         </div>
       ) : null}
     </Shell>
+    </AuthGuard>
   );
 }

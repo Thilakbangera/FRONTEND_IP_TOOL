@@ -5,6 +5,7 @@ import { Shell } from "../../components/Shell";
 import { Card, Label, Hint, PrimaryButton } from "../../components/Cards";
 import { UploadOne, FileChips } from "../../components/Upload";
 import { responseToDownload } from "../../lib/download";
+import { AuthGuard } from "../../components/AuthGuard";
 
 type GenState = "idle" | "generating" | "done" | "error";
 type PriorArtMode = "pdf" | "text";
@@ -164,6 +165,7 @@ export default function WsPage() {
   ];
 
   return (
+    <AuthGuard>
     <Shell
       title="WS Generator"
       subtitle="Organize required documents and prior-art inputs, then generate WS."
@@ -399,5 +401,6 @@ export default function WsPage() {
         </Card>
       </div>
     </Shell>
+    </AuthGuard>
   );
 }
