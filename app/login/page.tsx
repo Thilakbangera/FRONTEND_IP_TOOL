@@ -29,9 +29,12 @@ export default function LoginPage() {
         return;
       }
 
+      // Refresh so middleware picks up the new session cookie
+      router.refresh();
       router.push("/");
     } catch {
       setError("An unexpected error occurred. Please try again.");
+    } finally {
       setLoading(false);
     }
   }

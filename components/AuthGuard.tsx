@@ -12,9 +12,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const sb = getSupabase();
 
-    // Check current session
-    sb.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
+    // Check current user (matches middleware's getUser check)
+    sb.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
         setStatus("authenticated");
       } else {
         setStatus("unauthenticated");
