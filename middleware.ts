@@ -13,6 +13,11 @@ function isPublicPath(pathname: string): boolean {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Skip API routes and static assets
+  if (pathname.startsWith("/api")) {
+    return NextResponse.next();
+  }
+
   // Always allow public paths
   if (isPublicPath(pathname)) {
     return NextResponse.next();
@@ -37,17 +42,7 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-/* ── Only run middleware on app routes, skip static assets ── */
+/* ── Run on all routes except Next.js internals and static files ── */
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization)
-     * - favicon.ico, sitemap.xml, robots.txt
-     * - api routes
-     * - common image / font extensions
-     */
-    "/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|api|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff2?|ttf|eot)$).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
