@@ -46,7 +46,7 @@ export default function LoginPage() {
         <div className="mb-8 space-y-2 text-center">
           <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white/70 px-3 py-1 text-xs text-stone-700 shadow-sm backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-amber-600" />
-            ProSection Studio
+            Prosecution Studio
           </div>
           <h1 className="text-3xl font-semibold tracking-tight text-stone-900">
             Lextria Research
