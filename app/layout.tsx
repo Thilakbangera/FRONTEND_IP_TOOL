@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "ProSection Studio",
+  title: "Prosecution Studio",
   description: "FER Reply & Written Submission Generator – LextriaTech",
 };
 
