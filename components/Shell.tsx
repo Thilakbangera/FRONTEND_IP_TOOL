@@ -20,7 +20,7 @@ export function Shell({
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white/70 px-3 py-1 text-xs text-stone-700 shadow-sm backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-amber-600" />
-              ProSection Studio
+              Prosecution Studio
             </div>
             <h1 className="text-3xl font-semibold tracking-tight text-stone-900">{title}</h1>
             {subtitle ? <p className="max-w-2xl text-sm text-stone-600">{subtitle}</p> : null}
